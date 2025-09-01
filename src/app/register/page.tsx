@@ -1,41 +1,25 @@
+'use client'
 import { RegisterForm } from "@/components/register-form"
-import { db } from "@/lib/db";
-import { hash } from "bcryptjs";
-import z from "zod"
+import { registerSchema, RegisterSchema } from "@/schemas/registerSchema";
 
-const schema = z.object({
-  name: z.string("O nome deve ter pelo menos 2 caracteres").min(2),
-  email: z.email("E-mail inválido").min(5),
-  password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
-  confirmPassword: z.string().min(8)
-}).refine((data) => data.password === data.confirmPassword, {
-  path: ["confirmPassword"],
-  message: "As senhas não coincidem",
-});
+export default function Register() {
 
-export default function Page() {
-  async function registerAction(formData: FormData) {
-    'use server';
-
-    const { success, data } = schema.safeParse(Object.fromEntries(formData));
-
-    if (!success) {
-      return;
+  async function registerAction(data: RegisterSchema) {
+    const parsed = registerSchema.safeParse(data)
+    if (!parsed.success) {
+      throw new Error("Dados inválidos")
     }
 
-    const { name, email, password } = data;
-    const hashedPassword = await hash(password, 12);
-
-    await db.user.create({
-      data: { name, email, password: hashedPassword }
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(parsed.data),
     })
+
+    if (!res.ok) throw new Error("Erro ao registrar")
+
+    return "success"
   }
 
-  return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <RegisterForm registerAction={registerAction}/>
-      </div>
-    </div>
-  )
+  return <RegisterForm registerAction={registerAction} />
 }

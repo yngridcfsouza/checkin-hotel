@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const registerSchema = z.object({
-  role: z.enum(["guest", "hotel", "admin"]).default("guest"),
+  role: z.enum(["guest", "hotel"]),
   email: z.email("E-mail inválido").min(5),
   password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
 

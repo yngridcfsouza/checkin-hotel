@@ -74,7 +74,7 @@ export async function createHotel(data: CreateHotelInput) {
   const hotel = await db.hotel.create({
     data: {
       cnpj: data.cnpj,
-      adress: data.address,
+      address: data.address,
       phone: data.phone,
       userId: user.id,
     },

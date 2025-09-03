@@ -59,6 +59,16 @@ enum Role {
   ADMIN
 }
 
+model MagicLink {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  role      Role     @default(GUEST)
+  createdAt DateTime @default(now())
+}
+
 enum CheckinStatus {
   PENDING
   CONFIRMED

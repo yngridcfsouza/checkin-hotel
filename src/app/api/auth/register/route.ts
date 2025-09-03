@@ -1,24 +1,17 @@
-import { createGuest, createHotel } from "@/services/userService";
 import { NextRequest, NextResponse } from "next/server";
+import { registerEmailSchema } from "@/schemas/registerEmail";
+import { sendMagicLink } from "@/app/actions/sendMagicLink";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    if (body.role === "GUEST") {
-      const user = await createGuest(body);
-      return NextResponse.json({ message: "Guest registered successfully", user });
-    }
+    const parsed = registerEmailSchema.parse(body);
 
-    if (body.role === "HOTEL") {
-      const user = await createHotel(body);
-      return NextResponse.json({ message: "Hotel registered successfully", user });
-    }
+    // Enviar magic link por email com o role especificado
+    await sendMagicLink(parsed.email, parsed.role);
 
-    return NextResponse.json(
-      { error: "Invalid role" },
-      { status: 400 },
-    );
+    return NextResponse.json({ ok: true });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Registration error" }, { status: 500 });

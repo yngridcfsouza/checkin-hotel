@@ -3,12 +3,13 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { RegisterSchema, registerSchema } from "@/schemas/registerSchema"
+import { RegisterSchema, registerSchema } from "@/schemas/registerProfile"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { LoaderCircle } from 'lucide-react';
 
 interface IRegisterFormProps {
   registerAction: (data: RegisterSchema) => Promise<string>
@@ -123,9 +124,9 @@ export function RegisterForm({ registerAction }: IRegisterFormProps) {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full primary-text text-red-DEFAULT hover:bg-blue-500 transition-colors duration-200"
+            className="w-full primary-text text-red-400 hover:bg-blue-500 transition-colors duration-200"
           >
-            {isSubmitting ? "Registrando..." : "Registrar"}
+            {isSubmitting ? <LoaderCircle  /> : "Registrar"}
           </Button>
         </form>
       </CardContent>

@@ -11,17 +11,17 @@ export default function Footer() {
           {/* Logo e descrição */}
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center space-x-2 mb-3">
-              <Image 
-                src="/logo.png" 
-                alt="Express.com Logo" 
-                width={40} 
-                height={40} 
+              <Image
+                src="/favicon.png"
+                alt="Express.com Logo"
+                width={140}
+                height={140}
                 className="object-contain"
               />
               <h2 className="text-xl font-bold text-primary-50">Express.com</h2>
             </div>
             <p className="text-sm text-blue-100 text-center md:text-left">
-              Seu checkin online +rápido e +seguro. Simplifique sua experiência de hospedagem com nossa plataforma inovadora.
+              Seu checkin online +rápido e +seguro. Simplifique sua experiência de hospedagem.
             </p>
           </div>
 

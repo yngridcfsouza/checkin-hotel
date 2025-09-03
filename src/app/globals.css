@@ -6,19 +6,19 @@
   --color-primary: #275f8c;
   --color-primary-light: #3a7eaf;
   --color-primary-dark: #1a4269;
-  
+
   --color-secondary: #6ba5d1;
   --color-secondary-light: #9cc7e6;
   --color-secondary-dark: #4a84b0;
-  
+
   --color-accent: #a3c9e9;
-  
+
   --background: #f8fafc;
   --foreground: #1e293b;
-  
+
   --card-background: #ffffff;
   --card-foreground: #334155;
-  
+
   --border-color: #e2e8f0;
   --muted-color: #94a3b8;
 }
@@ -27,9 +27,32 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: 'Raleway', sans-serif;
+}
 
-  button {
+button {
     cursor: pointer;
   }
+
+/* Estilos para os ícones de bandeira */
+.flag-icon {
+  display: inline-block;
+  width: 24px;
+  height: 16px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 2px;
 }
+
+.flag-icon-br {
+  background-image: url('/flags/br.png');
+}
+
+.flag-icon-us {
+  background-image: url('/flags/us.png');
+}
+
+.flag-icon-es {
+  background-image: url('/flags/es.png');
+}
+
 

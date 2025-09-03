@@ -48,8 +48,8 @@ export default function GuestRegisterPage() {
         <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md text-center">
           <h1 className="text-2xl font-bold text-[#0a293f] mb-4">Quase lá!</h1>
           <p className="text-gray-700">
-            Verifique seu e-mail. Enviamos um link mágico para continuar seu
-            cadastro ✨
+            Verifique seu e-mail. Enviamos um link para continuar seu
+            cadastro!
           </p>
         </div>
       </div>
@@ -57,7 +57,7 @@ export default function GuestRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="flex items-center justify-center min-h-[80vh] bg-gray-50">
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md space-y-6"

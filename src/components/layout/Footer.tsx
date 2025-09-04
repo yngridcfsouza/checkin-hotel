@@ -14,8 +14,8 @@ export default function Footer() {
               <Image
                 src="/favicon.png"
                 alt="Express.com Logo"
-                width={140}
-                height={140}
+                width={40}
+                height={40}
                 className="object-contain"
               />
               <h2 className="text-xl font-bold text-primary-50">Express.com</h2>

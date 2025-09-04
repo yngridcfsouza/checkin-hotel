@@ -5,6 +5,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 interface Hotel {
   id: number;
@@ -34,7 +36,7 @@ export default function SearchHotelsPage() {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchParams.location || !searchParams.checkIn || !searchParams.checkOut) {
-      alert('Por favor, preencha todos os campos obrigatórios.');
+      toast.error('Por favor, preencha todos os campos obrigatórios.');
       return;
     }
 
@@ -99,7 +101,7 @@ export default function SearchHotelsPage() {
     }));
     
     // Mostrar mensagem de instrução
-    alert(`Você será redirecionado para ${hotel.platform}. Após fazer a reserva, volte para nossa plataforma para concluir o check-in.`);
+    toast.info(`Você será redirecionado para ${hotel.platform}. Após fazer a reserva, volte para nossa plataforma para concluir o check-in.`);
   };
 
   return (
@@ -187,8 +189,9 @@ export default function SearchHotelsPage() {
               <Button 
                 type="submit" 
                 disabled={isSearching}
-                className="w-full md:w-auto bg-blue-600 hover:bg-blue-700"
+                className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2"
               >
+                {isSearching && <LoadingSpinner size="sm" />}
                 {isSearching ? 'Buscando hotéis...' : 'Buscar Hotéis'}
               </Button>
             </form>
@@ -196,7 +199,7 @@ export default function SearchHotelsPage() {
 
           {isSearching && (
             <div className="text-center py-8">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <LoadingSpinner size="lg" className="mx-auto" />
               <p className="mt-2 text-gray-600">Comparando preços nas melhores plataformas...</p>
             </div>
           )}

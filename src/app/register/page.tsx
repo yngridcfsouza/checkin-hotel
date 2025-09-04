@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import RegisterLayout from "@/components/layout/RegisterLayout";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -18,12 +20,13 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md space-y-6">
-        <h1 className="text-2xl font-bold text-[#0a293f]">Junte-se a nós</h1>
-        <p className="text-gray-700">Escolha como deseja se cadastrar:</p>
+    <RegisterLayout>
+      <div className="min-h-[80vh] flex items-center justify-center bg-gray-50">
+        <div className="bg-white p-16 rounded-2xl shadow-md w-full max-w-md space-y-6">
+          <h1 className="text-2xl text-center font-bold text-blue-900">Junte-se a nós</h1>
+          <p className="text-gray-700 text-center">Escolha como deseja se cadastrar:</p>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <button
             onClick={handleGuestRegistration}
             disabled={loading}
@@ -31,7 +34,7 @@ export default function RegisterPage() {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12 text-[#275f8c] mb-2"
+              className="h-12 w-12 text-blue-900 mb-2"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -56,7 +59,7 @@ export default function RegisterPage() {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12 text-[#275f8c] mb-2"
+              className="h-12 w-12 text-blue-900 mb-2"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -73,8 +76,20 @@ export default function RegisterPage() {
               Quero cadastrar meu estabelecimento
             </span>
           </button>
+          </div>
+
+          {/* Link para login */}
+          <div className="flex justify-center text-center pt-4 border-t border-gray-200">
+            <p className="text-gray-600 text-sm mb-2">Já se registrou</p>
+            <Link
+              href="/auth/magic"
+              className="text-blue-900 hover:text-blue-700 font-medium text-sm transition-colors"
+            >
+              <span>? Acesse sua conta</span>
+            </Link>
+          </div>
         </div>
       </div>
-    </div>
+    </RegisterLayout>
   );
 }

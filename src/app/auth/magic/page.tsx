@@ -1,5 +1,6 @@
 "use client"
 
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { useSearchParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -50,7 +51,13 @@ export default function MagicLinkCallback() {
     verify()
   }, [params, router])
 
-  if (loading) return <p>Validando...</p>
+  if (loading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <LoadingSpinner className="w-16 h-16" />
+      </div>
+    );
+  }
   if (error) return <p className="text-red-500">{error}</p>
 
   return null

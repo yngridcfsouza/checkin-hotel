@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { registerProfileSchema, RegisterProfileInput } from "@/schemas/registerProfile";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function RegisterDetails() {
   const params = useSearchParams();
@@ -46,7 +48,7 @@ export default function RegisterDetails() {
       router.push("/"); // redireciona para dashboard/home
     } catch (err) {
       console.error(err);
-      alert("Erro ao salvar os dados. Tente novamente.");
+      toast.error("Erro ao salvar os dados. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -100,8 +102,9 @@ export default function RegisterDetails() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-primary text-white p-2 rounded hover:bg-primary-700"
+        className="w-full bg-blue-900 text-white p-2 rounded hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
+        {loading && <LoadingSpinner size="sm" />}
         {loading ? "Salvando..." : "Finalizar cadastro"}
       </button>
     </form>

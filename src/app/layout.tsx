@@ -4,8 +4,26 @@ import { Toaster } from "sonner";
 import MainLayout from "@/components/layout/MainLayout";
 
 export const metadata: Metadata = {
-  title: "Express.com",
-  description: "Seu checkin online +rápido e +seguro",
+  title: "Express.com | Site Oficial | Check-in Online",
+  description: "Seu Check-in Online +rápido e +seguro",
+  icons: {
+    icon: [{
+      url: '/favicon.png',
+      type: 'image/png'
+    }],
+    shortcut: [{
+      url: '/favicon.png',
+      type: 'image/png'
+    }],
+    apple: [{
+      url: '/favicon.png',
+      type: 'image/png'
+    }],
+    other: [{
+      url: '/favicon.png',
+      type: 'image/png'
+    }],
+  },
 };
 
 export default function RootLayout({

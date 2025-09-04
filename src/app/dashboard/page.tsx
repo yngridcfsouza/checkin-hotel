@@ -1,16 +1,68 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { toast } from 'sonner';
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [hotelSearch, setHotelSearch] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    try {
+      const res = await fetch('/api/auth/me');
+      
+      if (!res.ok) {
+        router.push('/register');
+        return;
+      }
+      
+      const data = await res.json();
+      setUser(data.user);
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      router.push('/register');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      toast.success('Logout realizado com sucesso!');
+      router.push('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      toast.error('Erro ao fazer logout');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   const handleHotelSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,12 +96,30 @@ export default function DashboardPage() {
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Dashboard - Check-in Online
-            </h1>
-            <p className="text-gray-600">
-              Encontre seu hotel e faça o check-in de forma rápida e segura.
-            </p>
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Bem-vindo, {user.name}!
+                </h1>
+                <p className="text-gray-600">
+                  {user.role === 'GUEST' ? 'Encontre seu hotel e faça o check-in de forma rápida e segura.' : 'Gerencie seu estabelecimento e acompanhe os check-ins.'}
+                </p>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">Logado como</p>
+                  <p className="font-medium">{user.email}</p>
+                  <p className="text-xs text-gray-400 capitalize">{user.role.toLowerCase()}</p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  onClick={handleLogout}
+                  className="text-red-600 border-red-600 hover:bg-red-50"
+                >
+                  Sair
+                </Button>
+              </div>
+            </div>
           </div>
 
           <Card className="p-6 mb-8">
@@ -66,11 +136,12 @@ export default function DashboardPage() {
                   className="mt-1"
                 />
               </div>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={isSearching || !hotelSearch.trim()}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto flex items-center justify-center gap-2"
               >
+                {isSearching && <LoadingSpinner size="sm" />}
                 {isSearching ? 'Buscando...' : 'Buscar Hotel'}
               </Button>
             </form>
@@ -98,7 +169,7 @@ export default function DashboardPage() {
                     <div className="flex flex-col space-y-2">
                       {hotel.checkInAvailable ? (
                         <>
-                          <Button 
+                          <Button
                             onClick={() => handleCheckIn(hotel.id)}
                             className="bg-green-600 hover:bg-green-700"
                           >
@@ -129,8 +200,8 @@ export default function DashboardPage() {
             <p className="text-gray-600 mb-4">
               Não encontrou seu hotel?
             </p>
-            <Link 
-              href="/search-hotels" 
+            <Link
+              href="/search-hotels"
               className="text-blue-600 hover:text-blue-800 underline"
             >
               Buscar hospedagem em nossa plataforma

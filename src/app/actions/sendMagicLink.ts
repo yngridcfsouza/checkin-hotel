@@ -18,7 +18,7 @@ export async function sendMagicLink(email: string, role: "guest" | "hotel" = "gu
       email,
       token,
       expiresAt,
-      role,
+      // role será definido pelo default no schema (GUEST)
     },
   });
 
@@ -26,13 +26,13 @@ export async function sendMagicLink(email: string, role: "guest" | "hotel" = "gu
 
   await sendEmail({
     to: email,
-    subject: "Seu link mágico - CheckIn.com",
+    subject: "Seu link de cadastro - Express.com",
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #2563eb;">Bem-vindo ao CheckIn.com!</h2>
-        <p>Clique no botão abaixo para continuar seu cadastro:</p>
-        <a href="${link}" style="display: inline-block; background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0;">
-          Continuar Cadastro
+      <div style="font-family: 'Raleway', sans-serif; max-width: 600px; margin: 0;">
+        <h2 style="color: #1c398e;">Bem-vindo ao Express.com!</h2>
+        <p style="font-size: 14px;">Para concluir seu cadastro e utilizar nossos serviços de Check-in antecipado em milhares de hotéis e acesso à informações incríveis, clique no botão abaixo e faça parte:</p>
+        <a href="${link}" style="display: inline-block; background-color: #1c398e; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0;">
+          Concluir Cadastro
         </a>
         <p style="color: #666; font-size: 14px;">
           Este link expira em 15 minutos. Se você não solicitou este cadastro, pode ignorar este email.

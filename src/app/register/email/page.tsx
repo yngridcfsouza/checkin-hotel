@@ -6,9 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { registerEmailSchema, RegisterEmailInput } from "@/schemas/registerEmail";
 import { sendMagicLink } from "@/app/actions/sendMagicLink";
 import { useState } from "react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function RegisterEmailPage() {
   const [sent, setSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<RegisterEmailInput>({
     resolver: zodResolver(registerEmailSchema),
@@ -16,8 +18,13 @@ export default function RegisterEmailPage() {
   });
 
   const onSubmit = async (data: RegisterEmailInput) => {
-    await sendMagicLink(data.email);
-    setSent(true);
+    setIsLoading(true);
+    try {
+      await sendMagicLink(data.email);
+      setSent(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -36,9 +43,11 @@ export default function RegisterEmailPage() {
           )}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+            disabled={isLoading}
+            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Enviar link mágico
+            {isLoading && <LoadingSpinner size="sm" />}
+            {isLoading ? 'Enviando...' : 'Enviar link mágico'}
           </button>
         </form>
       ) : (

@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { z } from "zod";
+import { toast } from "sonner";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 // Schema específico para hóspedes
 const guestProfileSchema = z.object({
@@ -12,7 +14,7 @@ const guestProfileSchema = z.object({
   cpf: z.string().length(11, "CPF inválido"),
   phone: z.string().min(10, "Telefone inválido"),
   birthDate: z.string().min(1, "Data de nascimento obrigatória"),
-  email: z.string().email("Email inválido"),
+  email: z.email("Email inválido"),
 });
 
 type GuestProfileInput = z.infer<typeof guestProfileSchema>;
@@ -57,12 +59,19 @@ export default function GuestRegisterDetails() {
         body: JSON.stringify(data),
       });
 
-      if (!res.ok) throw new Error("Erro ao salvar dados");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Erro ao salvar dados");
+      }
 
-      router.push("/dashboard"); // redireciona para dashboard
+      const result = await res.json();
+      toast.success(result.message || "Cadastro realizado com sucesso!");
+      
+      // Redirecionar para dashboard após sucesso
+      router.push("/dashboard");
     } catch (err) {
       console.error(err);
-      alert("Erro ao salvar os dados. Tente novamente.");
+      toast.error(err instanceof Error ? err.message : "Erro ao salvar os dados. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -154,8 +163,9 @@ export default function GuestRegisterDetails() {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#275f8c] hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              className="group relative w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#275f8c] hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
+              {loading && <LoadingSpinner size="sm" />}
               {loading ? "Salvando..." : "Finalizar cadastro"}
             </button>
           </div>

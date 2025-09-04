@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerEmailSchema, RegisterEmailInput } from "@/schemas/registerEmail";
 import { useState } from "react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { toast } from "sonner";
 
 export default function HotelRegisterPage() {
@@ -87,8 +88,9 @@ export default function HotelRegisterPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#275f8c] text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition"
+          className="w-full bg-[#275f8c] text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
+          {loading && <LoadingSpinner size="sm" />}
           {loading ? "Enviando..." : "Continuar"}
         </button>
       </form>

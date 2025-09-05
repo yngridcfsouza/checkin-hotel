@@ -1,89 +1,159 @@
-import bcrypt from "bcryptjs";
-import z from "zod";
+import { userRepository } from '@/repositories/UserRepository';
+import { guestRepository } from '@/repositories/GuestRepository';
+import { hotelRepository } from '@/repositories/HotelRepository';
+import { authService } from './AuthService';
+import { GuestProfileDTO, HotelProfileDTO, AuthResponse, JWTPayload } from '@/types';
 
-import { db } from "@/lib/db";
+export class UserService {
+  async createGuestProfile(profileData: GuestProfileDTO): Promise<AuthResponse> {
+    // Verificar se usuário já existe
+    const existingUser = await userRepository.findByEmail(profileData.email);
+    if (existingUser) {
+      throw new Error('Usuário já existe');
+    }
 
-const guestSchema = z.object({
-  name: z.string().min(2).max(100),
-  email: z.email(),
-  password: z.string().min(8).max(100),
-  cpf: z.string().min(11).max(11),
-  birthDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
-    message: "Invalid date format",
-  }),
-  phone: z.string().min(10).max(15),
-});
+    // Verificar se CPF já existe
+    const existingGuest = await guestRepository.findByCpf(profileData.cpf);
+    if (existingGuest) {
+      throw new Error('CPF já cadastrado');
+    }
 
-const hotelSchema = z.object({
-  name: z.string().min(2).max(100),
-  email: z.email(),
-  password: z.string().min(8).max(100),
-  cnpj: z.string().min(14).max(14),
-  address: z.string().min(5).max(200),
-  phone: z.string().min(10).max(15),
-});
+    // Gerar senha temporária
+    const tempPassword = Math.random().toString(36).slice(-8);
+    const hashedPassword = await authService.hashPassword(tempPassword);
 
-type CreateGuestInput = z.infer<typeof guestSchema>;
-type CreateHotelInput = z.infer<typeof hotelSchema>;
-
-export async function createGuest(data: CreateGuestInput) {
-  const parsedData = guestSchema.parse(data);
-
-  const hashedPassword = await bcrypt.hash(parsedData.password, 12);
-
-  const user = await db.user.create({
-    data: {
-      name: data.name,
-      email: data.email,
+    // Criar usuário
+    const user = await userRepository.create({
+      name: profileData.name,
+      email: profileData.email,
       password: hashedPassword,
-      role: "GUEST",
-    },
-  });
+      role: 'GUEST',
+    });
 
-  const guest = await db.guest.create({
-    data: {
-      cpf: data.cpf,
-      birthDate: new Date(data.birthDate),
-      phone: data.phone,
+    // Criar perfil de guest
+    const guest = await guestRepository.create({
+      cpf: profileData.cpf,
+      birthDate: new Date(profileData.birthDate),
+      phone: profileData.phone,
       userId: user.id,
-    },
-  });
+    });
 
-  await db.user.update({
-    where: { id: user.id },
-    data: { guestId: guest.id },
-  });
+    // Atualizar referência do user para guest
+    await userRepository.update(user.id, { guestId: guest.id });
 
-  return user;
+    // Gerar JWT token
+    const tokenPayload: JWTPayload = {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      guestId: guest.id,
+    };
+
+    const token = await authService.generateJWTToken(tokenPayload);
+
+    return {
+      success: true,
+      message: 'Cadastro realizado com sucesso',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      token,
+    };
+  }
+
+  async createHotelProfile(profileData: HotelProfileDTO): Promise<AuthResponse> {
+    // Verificar se usuário já existe
+    const existingUser = await userRepository.findByEmail(profileData.email);
+    if (existingUser) {
+      throw new Error('Usuário já existe');
+    }
+
+    // Verificar se CNPJ já existe
+    const existingHotel = await hotelRepository.findByCnpj(profileData.cnpj);
+    if (existingHotel) {
+      throw new Error('CNPJ já cadastrado');
+    }
+
+    // Gerar senha temporária
+    const tempPassword = Math.random().toString(36).slice(-8);
+    const hashedPassword = await authService.hashPassword(tempPassword);
+
+    // Criar usuário
+    const user = await userRepository.create({
+      name: profileData.name,
+      email: profileData.email,
+      password: hashedPassword,
+      role: 'HOTEL',
+    });
+
+    // Criar perfil de hotel
+    const hotel = await hotelRepository.create({
+      cnpj: profileData.cnpj,
+      address: profileData.address,
+      phone: profileData.phone,
+      userId: user.id,
+    });
+
+    // Atualizar referência do user para hotel
+    await userRepository.update(user.id, { hotelId: hotel.id });
+
+    // Gerar JWT token
+    const tokenPayload: JWTPayload = {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      hotelId: hotel.id,
+    };
+
+    const token = await authService.generateJWTToken(tokenPayload);
+
+    return {
+      success: true,
+      message: 'Cadastro realizado com sucesso',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      token,
+    };
+  }
+
+  async getUserById(id: string): Promise<any | null> {
+    const user = await userRepository.findById(id);
+    if (!user) {
+      return null;
+    }
+
+    // Remover senha da resposta
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }
+
+  async getUserByEmail(email: string): Promise<any | null> {
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+      return null;
+    }
+
+    // Remover senha da resposta
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }
+
+  async updateUser(id: string, data: Partial<any>): Promise<any> {
+    const updatedUser = await userRepository.update(id, data);
+    const { password, ...userWithoutPassword } = updatedUser;
+    return userWithoutPassword;
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    await userRepository.delete(id);
+  }
 }
 
-export async function createHotel(data: CreateHotelInput) {
-  const parsedData = hotelSchema.parse(data);
-
-  const hashedPassword = await bcrypt.hash(parsedData.password, 12);
-
-  const user = await db.user.create({
-    data: {
-      name: data.name,
-      email: data.email,
-      password: hashedPassword,
-      role: "HOTEL",
-    },
-  });
-
-  const hotel = await db.hotel.create({
-    data: {
-      cnpj: data.cnpj,
-      address: data.address,
-      phone: data.phone,
-      userId: user.id,
-    },
-  });
-
-  await db.user.update({
-    where: { id: user.id },
-    data: { hotelId: hotel.id },
-  });
-
-  return user;
-}
+export const userService = new UserService();

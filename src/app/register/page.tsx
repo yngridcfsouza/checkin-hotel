@@ -82,7 +82,7 @@ export default function RegisterPage() {
           <div className="flex justify-center text-center pt-4 border-t border-gray-200">
             <p className="text-gray-600 text-sm mb-2">Já se registrou</p>
             <Link
-              href="/auth/magic"
+              href="/login"
               className="text-blue-900 hover:text-blue-700 font-medium text-sm transition-colors"
             >
               <span>? Acesse sua conta</span>

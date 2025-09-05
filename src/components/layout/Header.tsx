@@ -90,7 +90,7 @@ export default function Header() {
           <Link href="/register/hotels" className="flex text-center w-fit px-2 py-2 text-primary-900 rounded-md hover:bg-blue-800 hover:text-white text-sm transition-colors border border-primary-900">
             Registre sua propriedade
           </Link>
-          <Link href="/register/guests" className="flex text-center w-fit px-2 py-2 bg-blue-900 text-white hover:bg-blue-800 rounded-md text-sm transition-colors">
+          <Link href="/login" className="flex text-center w-fit px-2 py-2 bg-blue-900 text-white hover:bg-blue-800 rounded-md text-sm transition-colors">
             Login
           </Link>
           <Link href="/register" className="flex text-center w-fit px-2 py-2 bg-blue-900 text-white hover:bg-blue-800 rounded-md text-sm transition-colors">
@@ -139,6 +139,9 @@ export default function Header() {
             </div>
             <Link href="/register/hotels" className="px-4 py-2 text-primary-900 rounded-md hover:bg-blue-900 hover:text-white text-sm transition-colors border border-primary-900 text-center">
               Registre sua propriedade
+            </Link>
+            <Link href="/login" className="px-4 py-2 bg-blue-900 text-white hover:bg-blue-800 rounded-md text-sm transition-colors text-center">
+              Login
             </Link>
             <Link href="/register/guests" className="px-4 py-2 bg-blue-800 text-white hover:bg-blue-900 rounded-md text-sm transition-colors text-center">
               Faça seu check-in online

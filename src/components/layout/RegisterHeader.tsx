@@ -65,7 +65,7 @@ export default function RegisterHeader() {
         {/* Área de login - Desktop */}
         <div className="hidden md:flex items-center space-x-4">
           <span className="text-gray-600 text-sm">Já tem uma conta?</span>
-          <Link href="/auth/magic" className="flex text-center w-fit px-4 py-2 bg-blue-900 text-white hover:bg-blue-800 rounded-md text-sm transition-colors">
+          <Link href="/login" className="flex text-center w-fit px-4 py-2 bg-blue-900 text-white hover:bg-blue-800 rounded-md text-sm transition-colors">
             Login
           </Link>
         </div>
@@ -112,9 +112,9 @@ export default function RegisterHeader() {
             {/* Login mobile */}
             <div className="text-center space-y-2">
               <p className="text-gray-600 text-sm">Já tem uma conta?</p>
-              <Link href="/auth/magic" className="block w-full py-2 bg-blue-900 text-white hover:bg-blue-800 rounded-md text-sm transition-colors">
-                Login
-              </Link>
+              <Link href="/login" className="block w-full py-2 bg-blue-900 text-white hover:bg-blue-800 rounded-md text-sm transition-colors">
+              Login
+            </Link>
             </div>
           </div>
         </div>

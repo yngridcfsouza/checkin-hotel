@@ -13,7 +13,7 @@ async function main() {
   const admin = await prisma.user.create({
     data: {
       name: "Admin Teste",
-      email: "admin@checkin.com",
+      email: "admin@express.com",
       password: hashedAdminPassword,
       role: "ADMIN",
     },
@@ -23,7 +23,7 @@ async function main() {
   const hotelUser = await prisma.user.create({
     data: {
       name: "Hotel Padrão",
-      email: "hotel@checkin.com",
+      email: "hotel@express.com",
       password: hashedHotelPassword,
       role: "HOTEL",
     },
@@ -48,7 +48,7 @@ async function main() {
   const guestUser = await prisma.user.create({
     data: {
       name: "Hóspede Teste",
-      email: "guest@checkin.com",
+      email: "guest@express.com",
       password: hashedGuestPassword,
       role: "GUEST",
     },

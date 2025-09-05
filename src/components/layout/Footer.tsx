@@ -38,9 +38,9 @@ export default function Footer() {
               <Link href="/register/hotels" className="text-blue-100 hover:text-primary-200 transition-colors">
                 Registro para Hotéis
               </Link>
-              <Link href="/auth/login" className="text-blue-100 hover:text-primary-200 transition-colors">
-                Entrar
-              </Link>
+              <Link href="/login" className="text-blue-100 hover:text-primary-200 transition-colors">
+                  Login
+                </Link>
             </nav>
           </div>
 

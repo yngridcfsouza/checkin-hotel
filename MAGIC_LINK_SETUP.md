@@ -17,7 +17,7 @@ SMTP_HOST="smtp.gmail.com"
 SMTP_PORT="587"
 SMTP_USER="your-email@gmail.com"
 SMTP_PASS="your-app-password"
-EMAIL_FROM="CheckIn <no-reply@checkin.com>"
+EMAIL_FROM="Express.com <no-reply@express.com>"
 
 # App URL
 NEXT_PUBLIC_APP_URL="http://localhost:3000"

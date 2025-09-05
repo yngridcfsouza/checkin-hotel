@@ -15,7 +15,7 @@ export default function HotelRegisterPage() {
     resolver: zodResolver(registerEmailSchema),
     defaultValues: {
       email: "",
-      role: "hotel", // Fixo como "hotel" para esta página
+      role: "HOTEL", // Fixo como "HOTEL" para esta página
     },
   });
 

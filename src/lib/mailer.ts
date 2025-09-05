@@ -25,7 +25,7 @@ interface EmailOptions {
 
 export async function sendEmail({ to, subject, html }: EmailOptions) {
   const mailOptions = {
-    from: process.env.EMAIL_FROM || "CheckIn <no-reply@checkin.com>",
+    from: process.env.EMAIL_FROM || "Express.com <no-reply@express.com>",
     to,
     subject,
     html,

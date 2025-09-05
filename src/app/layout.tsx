@@ -4,7 +4,7 @@ import { Toaster } from "sonner";
 import MainLayout from "@/components/layout/MainLayout";
 
 export const metadata: Metadata = {
-  title: "Express.com | Site Oficial | Check-in Online",
+  title: "Express.com | Check-in Online",
   description: "Seu Check-in Online +rápido e +seguro",
   icons: {
     icon: [{

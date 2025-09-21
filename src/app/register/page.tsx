@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import RegisterLayout from "@/components/layout/RegisterLayout";
 
 export default function RegisterPage() {
@@ -27,10 +28,11 @@ export default function RegisterPage() {
           <p className="text-gray-700 text-center">Escolha como deseja se cadastrar:</p>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <button
+          <Button
             onClick={handleGuestRegistration}
             disabled={loading}
-            className="flex flex-col items-center justify-center p-4 border-2 border-gray-200 rounded-xl hover:border-[#275f8c] hover:bg-blue-50 transition-all"
+            variant="outline"
+            className="flex flex-col items-center justify-center p-4 h-auto hover:border-[#275f8c] hover:bg-blue-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -48,14 +50,15 @@ export default function RegisterPage() {
             </svg>
             <span className="font-medium text-[#0a293f]">Sou Hóspede</span>
             <span className="text-xs text-gray-500 text-center mt-1">
-              Procuro hotéis para me hospedar
+              Procuro efetuar check-in em um hotel
             </span>
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={handleHotelRegistration}
             disabled={loading}
-            className="flex flex-col items-center justify-center p-4 border-2 border-gray-200 rounded-xl hover:border-[#275f8c] hover:bg-blue-50 transition-all"
+            variant="outline"
+            className="flex flex-col items-center justify-center p-4 h-auto hover:border-[#275f8c] hover:bg-blue-50"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +78,7 @@ export default function RegisterPage() {
             <span className="text-xs text-gray-500 text-center mt-1">
               Quero cadastrar meu estabelecimento
             </span>
-          </button>
+          </Button>
           </div>
 
           {/* Link para login */}

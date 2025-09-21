@@ -34,6 +34,7 @@ export interface MagicLink {
   expiresAt: Date;
   used: boolean;
   role: 'GUEST' | 'HOTEL' | 'ADMIN';
+  isLogin: boolean;
   createdAt: Date;
 }
 
@@ -64,6 +65,7 @@ export interface CreateMagicLinkDTO {
   token: string;
   expiresAt: Date;
   role?: 'GUEST' | 'HOTEL' | 'ADMIN';
+  isLogin?: boolean;
 }
 
 // DTOs para perfis

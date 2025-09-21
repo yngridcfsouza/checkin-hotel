@@ -7,3 +7,9 @@ export async function GET(request: NextRequest) {
     return await authController.getCurrentUser(req);
   });
 }
+
+export async function PUT(request: NextRequest) {
+  return await withRateLimit(request, generalRateLimiter, async (req) => {
+    return await authController.updateCurrentUser(req);
+  });
+}

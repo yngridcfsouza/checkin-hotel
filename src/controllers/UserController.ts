@@ -9,7 +9,7 @@ const guestProfileSchema = z.object({
   cpf: z.string().length(11, 'CPF inválido'),
   phone: z.string().min(10, 'Telefone inválido'),
   birthDate: z.string().min(1, 'Data de nascimento obrigatória'),
-  email: z.string().email('Email inválido'),
+  email: z.email('Email inválido'),
 });
 
 const hotelProfileSchema = z.object({
@@ -39,7 +39,7 @@ export class UserController {
 
       // Configurar cookie httpOnly
       if (result.token) {
-        response.cookies.set('accessToken', result.token, {
+        response.cookies.set('auth-token', result.token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'lax',
@@ -89,7 +89,7 @@ export class UserController {
 
       // Configurar cookie httpOnly
       if (result.token) {
-        response.cookies.set('accessToken', result.token, {
+        response.cookies.set('auth-token', result.token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'lax',

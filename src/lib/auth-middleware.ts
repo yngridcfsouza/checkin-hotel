@@ -26,7 +26,7 @@ export function verifyToken(token: string): AuthUser | null {
 }
 
 export function getAuthUser(request: NextRequest): AuthUser | null {
-  const token = request.cookies.get("accessToken")?.value;
+  const token = request.cookies.get("auth-token")?.value;
   
   if (!token) {
     return null;

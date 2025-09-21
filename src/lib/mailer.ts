@@ -32,10 +32,10 @@ export async function sendEmail({ to, subject, html }: EmailOptions) {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
-    console.log(`Email enviado para: ${to}`);
+    const result = await transporter.sendMail(mailOptions);
+    return result;
   } catch (error) {
-    console.error("Erro ao enviar email:", error);
-    throw new Error("Falha ao enviar email");
+    console.error("Erro detalhado ao enviar email:", error);
+    throw new Error(`Falha ao enviar email: ${error}`);
   }
 }

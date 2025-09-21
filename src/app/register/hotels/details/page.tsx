@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Button } from "@/components/ui/button";
+import { maskCNPJ, maskPhone, removeCNPJMask, removePhoneMask } from "@/utils/masks";
 
 // Schema específico para hotéis
 const hotelProfileSchema = z.object({
@@ -14,7 +16,7 @@ const hotelProfileSchema = z.object({
   cnpj: z.string().length(14, "CNPJ inválido"),
   phone: z.string().min(10, "Telefone inválido"),
   address: z.string().min(10, "Endereço muito curto"),
-  email: z.string().email("Email inválido"),
+  email: z.email("Email inválido"),
 });
 
 type HotelProfileInput = z.infer<typeof hotelProfileSchema>;
@@ -24,6 +26,8 @@ export default function HotelRegisterDetails() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [cnpjValue, setCnpjValue] = useState("");
+  const [phoneValue, setPhoneValue] = useState("");
 
   useEffect(() => {
     const emailFromLink = params.get("email");
@@ -53,10 +57,17 @@ export default function HotelRegisterDetails() {
   const onSubmit = async (data: HotelProfileInput) => {
     setLoading(true);
     try {
+      // Remove máscaras antes de enviar
+      const cleanData = {
+        ...data,
+        cnpj: removeCNPJMask(data.cnpj),
+        phone: removePhoneMask(data.phone),
+      };
+
       const res = await fetch("/api/register/hotel-profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(cleanData),
       });
 
       if (!res.ok) {
@@ -66,7 +77,7 @@ export default function HotelRegisterDetails() {
 
       const result = await res.json();
       toast.success(result.message || "Cadastro realizado com sucesso!");
-      
+
       // Redirecionar para dashboard após sucesso
       router.push("/dashboard");
     } catch (err) {
@@ -75,6 +86,18 @@ export default function HotelRegisterDetails() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCnpjChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const maskedValue = maskCNPJ(e.target.value);
+    setCnpjValue(maskedValue);
+    form.setValue("cnpj", maskedValue);
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const maskedValue = maskPhone(e.target.value);
+    setPhoneValue(maskedValue);
+    form.setValue("phone", maskedValue);
   };
 
   return (
@@ -99,6 +122,7 @@ export default function HotelRegisterDetails() {
                 type="text"
                 {...form.register("name")}
                 className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                placeholder="Digite o nome do seu hotel"
               />
               {form.formState.errors.name && (
                 <p className="text-red-500 text-sm mt-1">{form.formState.errors.name.message}</p>
@@ -108,14 +132,16 @@ export default function HotelRegisterDetails() {
             {/* CNPJ */}
             <div>
               <label htmlFor="cnpj" className="block text-sm font-medium text-gray-700">
-                CNPJ (apenas números)
+                CNPJ
               </label>
               <input
                 id="cnpj"
                 type="text"
-                {...form.register("cnpj")}
+                value={cnpjValue}
+                onChange={handleCnpjChange}
                 className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                placeholder="00000000000000"
+                placeholder="00.000.000/0000-00"
+                maxLength={18}
               />
               {form.formState.errors.cnpj && (
                 <p className="text-red-500 text-sm mt-1">{form.formState.errors.cnpj.message}</p>
@@ -147,9 +173,11 @@ export default function HotelRegisterDetails() {
               <input
                 id="phone"
                 type="tel"
-                {...form.register("phone")}
+                value={phoneValue}
+                onChange={handlePhoneChange}
                 className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
-                placeholder="11999999999"
+                placeholder="(11) 99999-9999"
+                maxLength={15}
               />
               {form.formState.errors.phone && (
                 <p className="text-red-500 text-sm mt-1">{form.formState.errors.phone.message}</p>
@@ -161,14 +189,15 @@ export default function HotelRegisterDetails() {
           </div>
 
           <div>
-            <button
+            <Button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center items-center gap-2 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#275f8c] hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              size="lg"
+              className="w-full flex justify-center items-center gap-2"
             >
               {loading && <LoadingSpinner size="sm" />}
               {loading ? "Salvando..." : "Finalizar cadastro"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

@@ -8,23 +8,27 @@ export class MagicLinkRepository {
         token,
         used: false,
         expiresAt: {
-          gt: new Date(),
+          gt: new Date(Date.now()),
         },
       },
     });
   }
 
   async findByTokenAndEmail(token: string, email: string): Promise<MagicLink | null> {
-    return await (db as any).magicLink.findFirst({
+    const currentTime = new Date(Date.now());
+
+    const result = await (db as any).magicLink.findFirst({
       where: {
         token,
         email,
         used: false,
         expiresAt: {
-          gt: new Date(),
+          gt: currentTime,
         },
       },
     });
+
+    return result;
   }
 
   async create(magicLinkData: CreateMagicLinkDTO): Promise<MagicLink> {
@@ -34,6 +38,7 @@ export class MagicLinkRepository {
         token: magicLinkData.token,
         expiresAt: magicLinkData.expiresAt,
         role: magicLinkData.role || 'GUEST',
+        isLogin: magicLinkData.isLogin || false,
       },
     });
   }
@@ -49,7 +54,7 @@ export class MagicLinkRepository {
     await (db as any).magicLink.deleteMany({
       where: {
         expiresAt: {
-          lt: new Date(),
+          lt: new Date(Date.now()),
         },
       },
     });

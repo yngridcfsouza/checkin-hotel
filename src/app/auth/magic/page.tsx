@@ -37,7 +37,7 @@ export default function MagicLinkCallback() {
         if (data.action === "register") {
           // Redirecionar para completar cadastro com base no role
           const role = data.role || "GUEST";
-        if (role === "HOTEL") {
+          if (role === "HOTEL") {
             router.push(`/register/hotels/details?email=${encodeURIComponent(email)}`)
           } else {
             router.push(`/register/guests/details?email=${encodeURIComponent(email)}`)
@@ -142,7 +142,8 @@ export default function MagicLinkCallback() {
               <Button
                 onClick={handleResendLink}
                 disabled={isResending || !params.get("email")}
-                className="w-full bg-blue-900 hover:bg-blue-800 text-white py-3 px-4 rounded-lg font-medium transition-colors"
+                size="lg"
+                className="w-full"
               >
                 {isResending && <LoadingSpinner size="sm" className="mr-2" />}
                 {isResending ? 'Reenviando...' : 'Reenviar Link de Acesso'}

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { BrazilFlag, USAFlag, SpainFlag, MenuIcon } from '../icons';
+import { Button } from '@/components/ui/button';
 
 export default function Header() {
   const [language, setLanguage] = useState('pt-BR');
@@ -87,15 +88,21 @@ export default function Header() {
             </button>
           </div>
 
-          <Link href="/register/hotels" className="flex text-center w-fit px-2 py-2 text-primary-900 rounded-md hover:bg-blue-800 hover:text-white text-sm transition-colors border border-primary-900">
-            Registre sua propriedade
-          </Link>
-          <Link href="/login" className="flex text-center w-fit px-2 py-2 bg-blue-900 text-white hover:bg-blue-800 rounded-md text-sm transition-colors">
-            Login
-          </Link>
-          <Link href="/register" className="flex text-center w-fit px-2 py-2 bg-blue-900 text-white hover:bg-blue-800 rounded-md text-sm transition-colors">
-            Cadastre-se
-          </Link>
+          <Button asChild variant="outline" size="sm">
+            <Link href="/register/hotels">
+              Registre sua propriedade
+            </Link>
+          </Button>
+          <Button asChild size="sm">
+            <Link href="/login">
+              Login
+            </Link>
+          </Button>
+          <Button asChild size="sm">
+            <Link href="/register">
+              Cadastre-se
+            </Link>
+          </Button>
         </div>
 
         {/* Botão de menu mobile */}
@@ -137,18 +144,26 @@ export default function Header() {
                 <SpainFlag />
               </button>
             </div>
-            <Link href="/register/hotels" className="px-4 py-2 text-primary-900 rounded-md hover:bg-blue-900 hover:text-white text-sm transition-colors border border-primary-900 text-center">
-              Registre sua propriedade
-            </Link>
-            <Link href="/login" className="px-4 py-2 bg-blue-900 text-white hover:bg-blue-800 rounded-md text-sm transition-colors text-center">
-              Login
-            </Link>
-            <Link href="/register/guests" className="px-4 py-2 bg-blue-800 text-white hover:bg-blue-900 rounded-md text-sm transition-colors text-center">
-              Faça seu check-in online
-            </Link>
-            <Link href="/register" className="px-4 py-2 bg-blue-800 text-white hover:bg-blue-900 rounded-md text-sm transition-colors text-center">
-              Cadastre-se
-            </Link>
+            <Button asChild variant="outline" className="w-full">
+              <Link href="/register/hotels">
+                Registre sua propriedade
+              </Link>
+            </Button>
+            <Button asChild className="w-full">
+              <Link href="/login">
+                Login
+              </Link>
+            </Button>
+            <Button asChild variant="secondary" className="w-full">
+              <Link href="/register/guests">
+                Faça seu check-in online
+              </Link>
+            </Button>
+            <Button asChild className="w-full">
+              <Link href="/register">
+                Cadastre-se
+              </Link>
+            </Button>
           </div>
         )}
       </header>

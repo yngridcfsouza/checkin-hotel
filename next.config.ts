@@ -17,10 +17,6 @@ const nextConfig: NextConfig = {
             value: 'on'
           },
           {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff'
-          },
-          {
             key: 'X-Frame-Options',
             value: 'DENY'
           },
@@ -29,14 +25,47 @@ const nextConfig: NextConfig = {
             value: '1; mode=block'
           }
         ]
+      },
+      {
+        source: '/_next/static/chunks/(.*)',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript; charset=utf-8'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          }
+        ]
+      },
+      {
+        source: '/_next/static/css/(.*)',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/css; charset=utf-8'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          }
+        ]
+      },
+      {
+        source: '/((?!_next/static).*)',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          }
+        ]
       }
     ];
   },
   
-  // Configurações experimentais para melhor performance
-  experimental: {
-    serverComponentsExternalPackages: ['bcryptjs']
-  }
+  // Configurações para pacotes externos
+  serverExternalPackages: ['bcryptjs']
 };
 
 export default nextConfig;

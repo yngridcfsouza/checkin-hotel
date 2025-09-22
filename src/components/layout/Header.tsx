@@ -48,13 +48,13 @@ export default function Header() {
 
   return (
     <header className={`bg-white fixed w-full top-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-md' : ''}`}>
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className="flex items-center mx-4">
           <Image
             src="/logo-resized.png"
             alt="Express.com Logo"
-            width={100}
-            height={30}
+            width={150}
+            height={50}
             className="object-contain"
           />
         </Link>

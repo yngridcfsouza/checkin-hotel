@@ -117,8 +117,12 @@ export default function Home() {
           {/* Terceira linha - Horários limitados */}
           <div className="flex flex-col lg:flex-row items-center mb-12">
             <div className="lg:w-1/2 mb-8 lg:mb-0">
-              <div className="bg-gray-200 rounded-lg h-80 flex items-center justify-center text-gray-500 text-lg font-medium">
-                Vamos colocar uma foto bem legal aqui
+              <div className="bg-gray-200 rounded-lg h-80 flex items-center justify-center text-gray-500 text-lg font-medium overflow-hidden">
+                <img
+                  src="/relogio.png"
+                  alt="Relógio indicando horários limitados de check-in em hotelaria tradicional"
+                  className="w-full h-full object-cover rounded-lg shadow-lg"
+                />
               </div>
             </div>
             <div className="lg:w-1/2 lg:pl-12">

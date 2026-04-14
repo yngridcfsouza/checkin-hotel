@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { userService } from '@/services/userService';
 import { GuestProfileDTO, HotelProfileDTO } from '@/types';
+import { apiAction } from '@/lib/api-handler';
 
 // Schemas de validação
 const guestProfileSchema = z.object({
@@ -22,22 +23,18 @@ const hotelProfileSchema = z.object({
 
 export class UserController {
   async createGuestProfile(req: NextRequest): Promise<NextResponse> {
-    try {
+    return apiAction(async () => {
       const body = await req.json();
       const validatedData = guestProfileSchema.parse(body) as GuestProfileDTO;
 
       const result = await userService.createGuestProfile(validatedData);
 
-
-
-      // Criar resposta com cookie httpOnly
       const response = NextResponse.json({
         success: result.success,
         message: result.message,
         user: result.user,
       });
 
-      // Configurar cookie httpOnly
       if (result.token) {
         response.cookies.set('auth-token', result.token, {
           httpOnly: true,
@@ -49,45 +46,22 @@ export class UserController {
       }
 
       return response;
-    } catch (error) {
-      console.error('Erro no cadastro de guest:', error);
-
-      if (error instanceof z.ZodError) {
-        return NextResponse.json(
-          { error: 'Dados inválidos', details: error.issues },
-          { status: 400 }
-        );
-      }
-
-      if (error instanceof Error) {
-        return NextResponse.json(
-          { error: error.message },
-          { status: 400 }
-        );
-      }
-
-      return NextResponse.json(
-        { error: 'Erro interno do servidor' },
-        { status: 500 }
-      );
-    }
+    });
   }
 
   async createHotelProfile(req: NextRequest): Promise<NextResponse> {
-    try {
+    return apiAction(async () => {
       const body = await req.json();
       const validatedData = hotelProfileSchema.parse(body) as HotelProfileDTO;
 
       const result = await userService.createHotelProfile(validatedData);
 
-      // Criar resposta com cookie httpOnly
       const response = NextResponse.json({
         success: result.success,
         message: result.message,
         user: result.user,
       });
 
-      // Configurar cookie httpOnly
       if (result.token) {
         response.cookies.set('auth-token', result.token, {
           httpOnly: true,
@@ -99,32 +73,11 @@ export class UserController {
       }
 
       return response;
-    } catch (error) {
-      console.error('Erro no cadastro de hotel:', error);
-
-      if (error instanceof z.ZodError) {
-        return NextResponse.json(
-          { error: 'Dados inválidos', details: error.issues },
-          { status: 400 }
-        );
-      }
-
-      if (error instanceof Error) {
-        return NextResponse.json(
-          { error: error.message },
-          { status: 400 }
-        );
-      }
-
-      return NextResponse.json(
-        { error: 'Erro interno do servidor' },
-        { status: 500 }
-      );
-    }
+    });
   }
 
   async getUserById(req: NextRequest, id: string): Promise<NextResponse> {
-    try {
+    return apiAction(async () => {
       const user = await userService.getUserById(id);
 
       if (!user) {
@@ -138,58 +91,32 @@ export class UserController {
         success: true,
         user,
       });
-    } catch (error) {
-      console.error('Erro ao buscar usuário:', error);
-      return NextResponse.json(
-        { error: 'Erro interno do servidor' },
-        { status: 500 }
-      );
-    }
+    });
   }
 
   async updateUser(req: NextRequest, id: string): Promise<NextResponse> {
-    try {
+    return apiAction(async () => {
       const body = await req.json();
-
       const updatedUser = await userService.updateUser(id, body);
 
       return NextResponse.json({
         success: true,
         user: updatedUser,
       });
-    } catch (error) {
-      console.error('Erro ao atualizar usuário:', error);
-
-      if (error instanceof Error) {
-        return NextResponse.json(
-          { error: error.message },
-          { status: 400 }
-        );
-      }
-
-      return NextResponse.json(
-        { error: 'Erro interno do servidor' },
-        { status: 500 }
-      );
-    }
+    });
   }
 
   async deleteUser(req: NextRequest, id: string): Promise<NextResponse> {
-    try {
+    return apiAction(async () => {
       await userService.deleteUser(id);
 
       return NextResponse.json({
         success: true,
         message: 'Usuário deletado com sucesso',
       });
-    } catch (error) {
-      console.error('Erro ao deletar usuário:', error);
-      return NextResponse.json(
-        { error: 'Erro interno do servidor' },
-        { status: 500 }
-      );
-    }
+    });
   }
 }
 
 export const userController = new UserController();
+

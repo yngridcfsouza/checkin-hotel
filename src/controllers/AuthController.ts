@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { authService } from '@/services/AuthService';
+import { apiAction } from '@/lib/api-handler';
 
 // Schemas de validação
 const sendMagicLinkSchema = z.object({
@@ -16,46 +17,24 @@ const verifyMagicLinkSchema = z.object({
 
 export class AuthController {
   async sendMagicLink(req: NextRequest): Promise<NextResponse> {
-    try {
+    return apiAction(async () => {
       const body = await req.json();
-      const validatedData = sendMagicLinkSchema.parse(body);
+      const { email, role, isLogin } = sendMagicLinkSchema.parse(body);
 
-      if (validatedData.isLogin) {
-        await authService.sendMagicLink(validatedData.email, validatedData.role, true);
-      } else {
-        await authService.sendMagicLink(validatedData.email, validatedData.role, false);
-      }
-
+      await authService.sendMagicLink(email, role, isLogin);
       return NextResponse.json({ success: true });
-    } catch (error) {
-      console.error('Erro ao enviar magic link:', error);
-
-      if (error instanceof z.ZodError) {
-        return NextResponse.json(
-          { error: 'Dados inválidos', details: error.issues },
-          { status: 400 }
-        );
-      }
-
-      return NextResponse.json(
-        { error: 'Erro interno do servidor' },
-        { status: 500 }
-      );
-    }
+    });
   }
 
   async verifyMagicLink(req: NextRequest): Promise<NextResponse | undefined> {
-    try {
+    return apiAction(async () => {
       const body = await req.json();
       const { token, email } = verifyMagicLinkSchema.parse(body);
 
       const result = await authService.verifyMagicLink(token, email);
 
       if (!result.isValid) {
-        return NextResponse.json(
-          { error: 'Link inválido ou expirado' },
-          { status: 400 }
-        );
+        throw new Error('Link inválido ou expirado');
       }
 
       if (result.isLogin && result.userExists) {
@@ -67,10 +46,7 @@ export class AuthController {
         // Buscar dados completos do usuário para gerar o token
         const user = await authService.getCurrentUserByEmail(email);
         if (!user) {
-          return NextResponse.json(
-            { error: 'Erro ao buscar dados do usuário' },
-            { status: 500 }
-          );
+          throw new Error('Erro ao buscar dados do usuário');
         }
 
         // Gerar JWT token
@@ -82,7 +58,7 @@ export class AuthController {
           ...(user.hotelId && { hotelId: user.hotelId }),
         };
 
-        const token = await authService.generateJWTToken(tokenPayload);
+        const jwtToken = await authService.generateJWTToken(tokenPayload);
 
         // Criar resposta com cookie
         const response = NextResponse.json({
@@ -95,11 +71,11 @@ export class AuthController {
             email: user.email,
             role: user.role,
           },
-          token,
+          token: jwtToken,
         });
 
         // Definir cookie httpOnly para o token
-        response.cookies.set('auth-token', token, {
+        response.cookies.set('auth-token', jwtToken, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'lax',
@@ -120,25 +96,13 @@ export class AuthController {
           message: 'Prossiga com o cadastro',
         });
       }
-    } catch (error) {
-      console.error('Erro ao verificar magic link:', error);
-
-      if (error instanceof z.ZodError) {
-        return NextResponse.json(
-          { error: 'Dados inválidos', details: error.issues },
-          { status: 400 }
-        );
-      }
-
-      return NextResponse.json(
-        { error: 'Erro interno do servidor' },
-        { status: 500 }
-      );
-    }
+      
+      throw new Error('Estado de autenticação inválido');
+    });
   }
 
   async getCurrentUser(req: NextRequest): Promise<NextResponse> {
-    try {
+    return apiAction(async () => {
       const token = req.cookies.get('auth-token')?.value;
 
       if (!token) {
@@ -161,17 +125,11 @@ export class AuthController {
         success: true,
         user,
       });
-    } catch (error) {
-      console.error('Erro ao obter usuário atual:', error);
-      return NextResponse.json(
-        { error: 'Erro interno do servidor' },
-        { status: 500 }
-      );
-    }
+    });
   }
 
   async logout(): Promise<NextResponse> {
-    try {
+    return apiAction(async () => {
       const response = NextResponse.json({
         success: true,
         message: 'Logout realizado com sucesso',
@@ -187,17 +145,11 @@ export class AuthController {
       });
 
       return response;
-    } catch (error) {
-      console.error('Erro no logout:', error);
-      return NextResponse.json(
-        { error: 'Erro interno do servidor' },
-        { status: 500 }
-      );
-    }
+    });
   }
 
   async updateCurrentUser(req: NextRequest): Promise<NextResponse> {
-    try {
+    return apiAction(async () => {
       const token = req.cookies.get('auth-token')?.value;
 
       if (!token) {
@@ -211,10 +163,7 @@ export class AuthController {
       const updatedUser = await authService.updateCurrentUser(token, body);
 
       if (!updatedUser) {
-        return NextResponse.json(
-          { error: 'Usuário não encontrado' },
-          { status: 404 }
-        );
+        throw new Error('Usuário não encontrado');
       }
 
       return NextResponse.json({
@@ -222,14 +171,9 @@ export class AuthController {
         user: updatedUser,
         message: 'Dados atualizados com sucesso',
       });
-    } catch (error) {
-      console.error('Erro ao atualizar usuário:', error);
-      return NextResponse.json(
-        { error: 'Erro interno do servidor' },
-        { status: 500 }
-      );
-    }
+    });
   }
 }
 
 export const authController = new AuthController();
+
